@@ -9,7 +9,6 @@
 #include <cstdlib>
 #include "nvapi.h"
 
-const std::string FILEPATH = "C:/Program Files (x86)/MSI Afterburner/Profiles/VEN_1002&DEV_1636&SUBSYS_8760103C&REV_D3&BUS_3&DEV_0&FN_0.CFG";
 const std::string AFNAME = "MSI Afterburner ";
 const std::string OCCTNAME = "OCCT - Stability Testing since 2003";
 const std::string SUPERLAUNCHNAME = "UNIGINE Superposition v1.1";
@@ -47,6 +46,9 @@ static std::vector<std::string> read_to_vector(std::string filepath)
 
 static std::string read_from_vector(std::vector<std::string> file, std::string parameter)
 {
+    int line = 0;
+    bool done;
+    std::string filepath = "";
     for (int i = 0; i < file.size(); i++)
     {
         bool match = true;
@@ -65,6 +67,11 @@ static std::string read_from_vector(std::vector<std::string> file, std::string p
         if (done)
             break;
     }
+    for (int i = parameter.size(); i < file[line].size(); i++)
+    {
+        filepath += file[line][i];
+    }
+    return filepath;
 }
 
 static void change_vector_value(std::vector<std::string>& file, std::string parameter, std::string input, int profile)
@@ -365,13 +372,15 @@ static void get_mouse_coords(int& mouseX, int& mouseY)
 
 int main()
 {
+    std::vector<std::string> config = read_to_vector("config.txt");
+    std::string afterburnerConfigFilepath = read_from_vector(config, "afterburnerConfigFilepath=");
     int clockSteps = 5000;
     int profile = 1;
     int core = 1500000;
     int memory = 1333000;
-    //std::vector<std::string> afterburner = read_to_vector(FILEPATH);
+    //std::vector<std::string> afterburner = read_to_vector(afterburnerConfigFilepath);
     //change_vector_value(afterburner, "CoreClk=", std::to_string(core), profile);
-    //vector_to_file(afterburner, FILEPATH);
+    //vector_to_file(afterburner, afterburnerConfigFilepath);
     //std::this_thread::sleep_for(std::chrono::seconds(2));
     //apply_afterburner_profile(profile + '0');
     //std::this_thread::sleep_for(std::chrono::seconds(2));
